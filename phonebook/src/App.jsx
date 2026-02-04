@@ -8,6 +8,15 @@ const App = () => {
     event.preventDefault();
     console.log('Handle submit: ', newName);
 
+    // Check is name already in list? 
+    const nameExists = persons.some(person => person.name === newName);
+
+    if (nameExists) 
+    { 
+      alert(`${newName} is already added to phonebook`);
+       return; 
+    }
+
     const nameObject = {
       name: newName
     };
