@@ -1,22 +1,44 @@
 import { useState } from 'react';
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: 'Arto Hellas' }]); 
-  const [newName, setNewName] = useState('')
+  const [persons, setPersons] = useState([{ name: 'Arto Hellas' } ]); 
+  const [newName, setNewName] = useState('');
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log('Handle submit: ', newName);
+
+    const nameObject = {
+      name: newName
+    };
+
+    setPersons(persons.concat(nameObject));
+    setNewName('');
+  }
+
+  const handleNameChange = (event) => {
+    console.log('handleNameChange is:', event.target.value);
+    setNewName(event.target.value);
+  }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
+
+      <form onSubmit={handleSubmit}>
         <div>
-          name: <input />
+          name: <input value={newName} onChange={handleNameChange} />
         </div>
         <div>
           <button type="submit">add</button>
         </div>
       </form>
+
       <h2>Numbers</h2>
-    ...
+      {
+      persons.map((person, i) => (
+        <div key={i}>{person.name}</div>
+      ))}
     </div>
   )
 }
