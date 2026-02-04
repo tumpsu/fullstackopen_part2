@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 const App = () => {
   //const [persons, setPersons] = useState([{ name: 'Arto Hellas' } ]); 
+  // Test data
   const [persons, setPersons] = useState([ 
     { name: 'Arto Hellas', number: '040-123456' }, 
     { name: 'Ada Lovelace', number: '39-44-5323523' }, 
@@ -72,7 +73,7 @@ const App = () => {
       <h2>Numbers</h2>
       {
       personsToShow.map((person, i) => (
-        <div key={i}>{person.name}, phone number: {person.number}</div>
+        <div key={i}>{person.name} {person.number}</div>
       ))}
     </div>
   )
