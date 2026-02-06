@@ -16,9 +16,9 @@ const App = () => {
   console.log('effect');
   personService
     .getAll()
-    .then(response => {
+    .then(initialPersons => {
       console.log('promise fulfilled');
-      setPersons(response);
+      setPersons(initialPersons);
     });
 }, []);
 
