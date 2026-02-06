@@ -60,6 +60,17 @@ const App = () => {
      console.log('handleFilterChange, ', event.target.value);
     setFilter(event.target.value);
   }
+
+  const handleDelete = (id, name) => { 
+    if (window.confirm(`Delete ${name}?`)) 
+    { 
+        personService 
+        .remove(id) 
+        .then(() => { 
+          setPersons(persons.filter(person => person.id !== id));
+         });
+    }
+  }
   // case-insensive filter 
   const personsToShow = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()));
   
@@ -76,7 +87,7 @@ const App = () => {
           handleSubmit={handleSubmit} />
 
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} handleDelete={handleDelete} />
     </div>
   )
 }
