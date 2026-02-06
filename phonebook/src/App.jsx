@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import personService from './services/persons';
 import Filter from './compoments/Filter';
 import PersonForm from './compoments/PersonForm';
 import Persons from './compoments/Persons';
@@ -13,11 +13,12 @@ const App = () => {
   const [filter, setFilter] = useState('');
   
   useEffect(() => {
-  console.log('effect')
-  axios
-    .get('http://localhost:3001/persons').then(response => {
+  console.log('effect');
+  personService
+    .getAll()
+    .then(response => {
       console.log('promise fulfilled');
-      setPersons(response.data);
+      setPersons(response);
     });
 }, []);
 
@@ -34,14 +35,17 @@ const App = () => {
        return; 
     }
 
-    const nameObject = {
+    const personObject = {
       name: newName,
       number: newNumber
     };
-
-    setPersons(persons.concat(nameObject));
-    setNewName('');
-    setNewNumber('');
+    personService 
+      .create(personObject) 
+      .then(returnedPerson => { 
+        setPersons(persons.concat(returnedPerson));
+        setNewName('');
+        setNewNumber(''); 
+      });
   }
 
   const handleNameChange = (event) => {
