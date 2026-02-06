@@ -22,31 +22,46 @@ const App = () => {
     });
 }, []);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log('Handle submit: ', newName);
+const handleSubmit = (event) => {
+  event.preventDefault();
+  console.log('Handle submit: ', newName);
+  // Check is name already in list? 
+  const nameExists = persons.find(person => person.name === newName);
 
-    // Check is name already in list? 
-    const nameExists = persons.some(person => person.name === newName);
+  if (nameExists) 
+  {
+    const ok = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
 
-    if (nameExists) 
-    { 
-      alert(`${newName} is already added to phonebook`);
-       return; 
+    if (ok)
+    {
+      const updatedPerson = { ...nameExists, number: newNumber };
+
+      personService
+        .update(nameExists.id, updatedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(p =>
+            p.id !== nameExists.id ? p : returnedPerson
+          ));
+          setNewName('');
+          setNewNumber('');
+        });
     }
-
-    const personObject = {
-      name: newName,
-      number: newNumber
-    };
-    personService 
-      .create(personObject) 
-      .then(returnedPerson => { 
-        setPersons(persons.concat(returnedPerson));
-        setNewName('');
-        setNewNumber(''); 
-      });
+    return;
   }
+  
+  const personObject = {
+    name: newName,
+    number: newNumber
+  };
+
+  personService
+    .create(personObject)
+    .then(returnedPerson => {
+      setPersons(persons.concat(returnedPerson));
+      setNewName('');
+      setNewNumber('');
+    });
+}
 
   const handleNameChange = (event) => {
     console.log('handleNameChange is: ', event.target.value);
