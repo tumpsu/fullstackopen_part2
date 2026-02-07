@@ -9,6 +9,8 @@ const App = () => {
   const [countries, setCountries] = useState([]);
   const [filter, setFilter] = useState('');
   const [notification, setNotification] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
 
   const showNotification = (text, type) => {
     setNotification({ text, type });
@@ -20,13 +22,14 @@ const App = () => {
       .getAll()
       .then(data => {
         setCountries(data);
+        setSelectedCountry(null); 
         showNotification('Country data loaded successfully', 'success');
       })
       .catch(error => {
         console.error('Error fetching countries:', error);
         showNotification('Failed to load country data', 'error');
       });
-  }, []);
+  }, [filter]);
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
@@ -36,27 +39,33 @@ const App = () => {
     c.name.common.toLowerCase().includes(filter.toLowerCase())
   );
 
-  return (
-    <div>
-      <h1>Country Finder</h1>
+ return (
+  <div>
+    <h1>Country Finder</h1>
 
-      <Notification message={notification} />
+    <Notification message={notification} />
 
-      <Filter value={filter} onChange={handleFilterChange} />
+    <Filter value={filter} onChange={handleFilterChange} />
 
-      {filter === '' ? (
-        <p>Type a country name</p>
-      ) : filtered.length > 10 ? (
-        <p>Too many matches, specify another filter</p>
-      ) : filtered.length > 1 ? (
-        <CountryList countries={filtered} />
-      ) : filtered.length === 1 ? (
-        <CountryDetails country={filtered[0]} />
-      ) : (
-        <p>No matches</p>
-      )}
-    </div>
-  );
+    {selectedCountry ? (
+      <CountryDetails country={selectedCountry} />
+    ) : filter === '' ? (
+      <p>Type a country name</p>
+    ) : filtered.length > 10 ? (
+      <p>Too many matches, specify another filter</p>
+    ) : filtered.length > 1 ? (
+      <CountryList
+        countries={filtered}
+        onShow={(country) => setSelectedCountry(country)}
+      />
+    ) : filtered.length === 1 ? (
+      <CountryDetails country={filtered[0]} />
+    ) : (
+      <p>No matches</p>
+    )}
+  </div>
+);
+
 }
 
 export default App;

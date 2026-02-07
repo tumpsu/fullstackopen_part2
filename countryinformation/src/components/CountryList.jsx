@@ -1,8 +1,10 @@
-const CountryList = ({ countries }) => {
+const CountryList = ({ countries, onShow }) => {
   return (
     <ul>
       {countries.map(c => (
-        <li key={c.name.common}>{c.name.common}</li>
+        <li key={c.name.common}>{c.name.common}
+        <button onClick={() => onShow(c)}>show</button>
+        </li>
       ))}
     </ul>
   )
