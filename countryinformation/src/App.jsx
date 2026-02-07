@@ -29,7 +29,7 @@ const App = () => {
         console.error('Error fetching countries:', error);
         showNotification('Failed to load country data', 'error');
       });
-  }, [filter]);
+  }, []/*[filter]*/);
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
