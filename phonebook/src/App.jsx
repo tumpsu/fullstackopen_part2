@@ -3,6 +3,7 @@ import personService from './services/persons';
 import Filter from './compoments/Filter';
 import PersonForm from './compoments/PersonForm';
 import Persons from './compoments/Persons';
+import Notification from './compoments/Notification';
 
 const App = () => {
   //const [persons, setPersons] = useState([{ name: 'Arto Hellas' } ]); 
@@ -11,6 +12,12 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [notification, setNotification] = useState(null);
+
+  const showNotification = (text, type = 'success') => { 
+    setNotification({ text, type });
+    setTimeout(() => { setNotification(null) }, 3000);
+  }
   
   useEffect(() => {
   console.log('effect');
@@ -44,6 +51,11 @@ const handleSubmit = (event) => {
           ));
           setNewName('');
           setNewNumber('');
+          showNotification(`Updated number for ${returnedPerson.name}.`, 'success');
+        })
+        .catch(error => { 
+          showNotification(`Information of ${nameExists.name} has already been removed from server.`, 'error'); 
+          setPersons(persons.filter(p => p.id !== nameExists.id)); 
         });
     }
     return;
@@ -60,7 +72,9 @@ const handleSubmit = (event) => {
       setPersons(persons.concat(returnedPerson));
       setNewName('');
       setNewNumber('');
-    });
+      showNotification(`Added ${returnedPerson.name}.`, 'success');
+    })
+    .catch(error => { showNotification('Add failed.', 'error') })
 }
 
   const handleNameChange = (event) => {
@@ -83,16 +97,21 @@ const handleSubmit = (event) => {
         .remove(id) 
         .then(() => { 
           setPersons(persons.filter(person => person.id !== id));
+          showNotification(`Removed ${name}.`, 'success')
+         })
+         .catch(error => { 
+          showNotification( `Person ${name} is already deleted on server.`, 'error' );
          });
     }
   }
-  // case-insensive filter 
+    // case-insensive filter 
   const personsToShow = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()));
   
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
+      <Notification message={notification} />
       <h3>Add a new</h3>
        <PersonForm 
           newName={newName} 
